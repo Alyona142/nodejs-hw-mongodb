@@ -30,20 +30,16 @@ export const deleteContact = async (contactId) => {
 };
 
 export const updateContact = async (contactId, payload, options = {}) => {
-  const rawResult = await ContactsCollection.findByIdAndUpdate(
+  const result = await ContactsCollection.findByIdAndUpdate(
     { _id: contactId },
     payload,
-    {
-      new: true,
-      includeResultMetadata: true,
-      ...options,
-    },
+    { new: true, includeResultMetadata: true, ...options },
   );
 
-  if (!rawResult || !rawResult.value) return null;
+  if (!result || !result.value) return null;
 
   return {
-    student: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    contact: result.value,
+    isNew: Boolean(result?.lastErrorObject?.upserted),
   };
 };
