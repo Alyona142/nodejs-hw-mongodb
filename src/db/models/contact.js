@@ -13,7 +13,6 @@ const contactSchema = new Schema(
     email: {
       type: String,
       required: false,
-      match: [/^\S+@\S+\.\S+$/, 'Invalid email format'],
     },
     isFavourite: {
       type: Boolean,
@@ -26,6 +25,7 @@ const contactSchema = new Schema(
       required: true,
       default: 'personal',
     },
+    userId: { type: Schema.Types.ObjectId, ref: 'users' },
   },
   {
     timestamps: true,
@@ -33,5 +33,5 @@ const contactSchema = new Schema(
   },
 );
 
-const ContactsCollection = model('contacts', contactSchema);
+const ContactsCollection = model('сontacts', contactSchema);
 export default ContactsCollection;
