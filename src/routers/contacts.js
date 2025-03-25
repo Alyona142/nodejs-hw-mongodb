@@ -24,7 +24,7 @@ router.post(
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
-router.delete('/:contactId', ctrlWrapper(deleteContactController));
+router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 router.put(
   '/:contactId',
   validateBody(createContactSchema),
