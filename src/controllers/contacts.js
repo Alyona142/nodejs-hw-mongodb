@@ -5,6 +5,7 @@ import {
   getAllContacts,
   getContactById,
 } from '../services/contacts.js';
+import { Types } from 'mongoose';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -61,6 +62,10 @@ export const createContactController = ctrlWrapper(async (req, res) => {
 export const deleteContactController = ctrlWrapper(async (req, res, next) => {
   const { _id: userId } = req.user;
   const { contactId } = req.params;
+
+  if (!Types.ObjectId.isValid(contactId)) {
+    throw createHttpError(400, 'Invalid contact ID');
+  }
 
   const contact = await deleteContact({ _id: contactId, userId });
 
