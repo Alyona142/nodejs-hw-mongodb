@@ -24,10 +24,20 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
     sortOrder,
   });
 
+  const filteredContacts = contacts.map(
+    ({ _id, name, phoneNumber, isFavourite, contactType }) => ({
+      _id,
+      name,
+      phoneNumber,
+      isFavourite,
+      contactType,
+    }),
+  );
+
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
-    data: contacts,
+    data: filteredContacts,
   });
 });
 
@@ -97,20 +107,24 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
 });
 
 export const patchContactController = ctrlWrapper(async (req, res, next) => {
-  const { _id: userId } = req.user;
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
 
-  const result = await updateContact({ _id: contactId, userId }, req.body, {
+  if (!Types.ObjectId.isValid(contactId)) {
+    throw createHttpError(400, 'Invalid contact ID');
+  }
+
+  const contact = await updateContact({ _id: contactId, userId }, req.body, {
     new: true,
   });
 
-  if (!result) {
+  if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
 
-  res.json({
+  res.status(200).json({
     status: 200,
-    message: 'Successfully updated a contact!',
-    data: result,
+    message: `Successfully patched a contact!`,
+    data: contact,
   });
 });
