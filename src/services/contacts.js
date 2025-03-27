@@ -53,13 +53,22 @@ export const updateContact = async (contactId, payload, options = {}) => {
   const result = await ContactsCollection.findByIdAndUpdate(
     contactId,
     payload,
-    { new: true, includeResultMetadata: true, ...options, upsert: false },
+    { new: true, upsert: false, ...options },
   );
 
-  if (!result || !result.value) return null;
-
-  return {
-    contact: result.value,
-    isNew: Boolean(result?.lastErrorObject?.upserted),
-  };
+  return result || null;
 };
+// export const updateContact = async (contactId, payload, options = {}) => {
+//   const result = await ContactsCollection.findByIdAndUpdate(
+//     contactId,
+//     payload,
+//     { new: true, includeResultMetadata: true, ...options, upsert: false },
+//   );
+
+//   if (!result || !result.value) return null;
+
+//   return {
+//     contact: result.value,
+//     isNew: Boolean(result?.lastErrorObject?.upserted),
+//   };
+// };

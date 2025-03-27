@@ -16,29 +16,38 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
 
-  const contacts = await getAllContacts({
-    userId,
-    page,
-    perPage,
-    sortBy,
-    sortOrder,
-  });
+  try {
+    const contactsResponse = await getAllContacts({
+      userId,
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+    });
 
-  const filteredContacts = contacts.map(
-    ({ _id, name, phoneNumber, isFavourite, contactType }) => ({
-      _id,
-      name,
-      phoneNumber,
-      isFavourite,
-      contactType,
-    }),
-  );
+    const contacts = contactsResponse.data;
+    const filteredContacts = contacts.map(
+      ({ _id, name, phoneNumber, isFavourite, contactType }) => ({
+        _id,
+        name,
+        phoneNumber,
+        isFavourite,
+        contactType,
+      }),
+    );
 
-  res.json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: filteredContacts,
-  });
+    res.json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: filteredContacts,
+    });
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({
+      status: 500,
+      message: 'Error fetching contacts',
+    });
+  }
 });
 
 export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
