@@ -25,21 +25,20 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
       sortOrder,
     });
 
-    const contacts = contactsResponse.data;
-    const filteredContacts = contacts.map(
-      ({ _id, name, phoneNumber, isFavourite, contactType }) => ({
-        _id,
-        name,
-        phoneNumber,
-        isFavourite,
-        contactType,
-      }),
-    );
+    const { data: contacts, totalItems, totalPages } = contactsResponse; // Додай ці поля у `getAllContacts`
 
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: filteredContacts,
+      data: {
+        contacts,
+        pagination: {
+          totalItems,
+          totalPages,
+          currentPage: page,
+          pageSize: perPage,
+        },
+      },
     });
   } catch (error) {
     console.error('Error fetching contacts:', error);
