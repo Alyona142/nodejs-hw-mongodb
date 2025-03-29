@@ -120,32 +120,27 @@ export const patchContactController = async (req, res, next) => {
   const photo = req.file;
 
   let photoUrl;
-  if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+
+  try {
+    if (photo) {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+
+    const result = await updateContact(contactId, {
+      ...req.body,
+      photo: photoUrl || req.body.photo,
+    });
+
+    if (!result) {
+      return next(createHttpError(404, 'Contact not found'));
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully patched a contact!',
+      data: result,
+    });
+  } catch (error) {
+    next(createHttpError(500, 'Error updating contact', { cause: error }));
   }
-
-  const result = await updateContact(contactId, {
-    ...req.body,
-    photo: photoUrl,
-  });
-  // const { _id: userId } = req.user;
-
-  // if (!Types.ObjectId.isValid(contactId)) {
-  //   throw createHttpError(400, 'Invalid contact ID');
-  // }
-
-  // const contact = await updateContact({ _id: contactId, userId }, req.body, {
-  //   new: true,
-  // });
-
-  if (!result) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
-  }
-
-  res.status(200).json({
-    status: 200,
-    message: `Successfully patched a contact!`,
-    data: result.contact,
-  });
 };
