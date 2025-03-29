@@ -10,6 +10,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getContactsController = ctrlWrapper(async (req, res) => {
   const { _id: userId } = req.user;
@@ -25,21 +26,20 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
       sortOrder,
     });
 
-    const contacts = contactsResponse.data;
-    const filteredContacts = contacts.map(
-      ({ _id, name, phoneNumber, isFavourite, contactType }) => ({
-        _id,
-        name,
-        phoneNumber,
-        isFavourite,
-        contactType,
-      }),
-    );
+    const { data: contacts, totalItems, totalPages } = contactsResponse;
 
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: filteredContacts,
+      data: {
+        contacts,
+        pagination: {
+          totalItems,
+          totalPages,
+          currentPage: page,
+          pageSize: perPage,
+        },
+      },
     });
   } catch (error) {
     console.error('Error fetching contacts:', error);
@@ -115,25 +115,37 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
   });
 });
 
-export const patchContactController = ctrlWrapper(async (req, res, next) => {
+export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const { _id: userId } = req.user;
+  const photo = req.file;
 
-  if (!Types.ObjectId.isValid(contactId)) {
-    throw createHttpError(400, 'Invalid contact ID');
+  let photoUrl;
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
   }
 
-  const contact = await updateContact({ _id: contactId, userId }, req.body, {
-    new: true,
+  const result = await updateContact(contactId, {
+    ...req.body,
+    photo: photoUrl,
   });
+  // const { _id: userId } = req.user;
 
-  if (!contact) {
-    throw createHttpError(404, 'Contact not found');
+  // if (!Types.ObjectId.isValid(contactId)) {
+  //   throw createHttpError(400, 'Invalid contact ID');
+  // }
+
+  // const contact = await updateContact({ _id: contactId, userId }, req.body, {
+  //   new: true,
+  // });
+
+  if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
   }
 
   res.status(200).json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: contact,
+    data: result.contact,
   });
-});
+};
