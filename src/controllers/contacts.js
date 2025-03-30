@@ -11,6 +11,8 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 export const getContactsController = ctrlWrapper(async (req, res) => {
   const { _id: userId } = req.user;
@@ -121,26 +123,26 @@ export const patchContactController = async (req, res, next) => {
 
   let photoUrl;
 
-  try {
-    if (photo) {
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
-
-    const result = await updateContact(contactId, {
-      ...req.body,
-      photo: photoUrl || req.body.photo,
-    });
-
-    if (!result) {
-      return next(createHttpError(404, 'Contact not found'));
-    }
-
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully patched a contact!',
-      data: result,
-    });
-  } catch (error) {
-    next(createHttpError(500, 'Error updating contact', { cause: error }));
   }
+
+  const result = await updateContact(contactId, {
+    ...req.body,
+    ...(photoUrl && { photo: photoUrl }),
+  });
+
+  if (!result) {
+    return next(createHttpError(404, 'Contact not found'));
+  }
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result,
+  });
 };
