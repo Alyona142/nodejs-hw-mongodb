@@ -25,19 +25,19 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
       sortOrder,
     });
 
-    const { data: contacts, totalItems, totalPages } = contactsResponse; // Додай ці поля у `getAllContacts`
+    const { data: contacts, totalItems, totalPages } = contactsResponse;
 
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
       data: {
-        contacts,
-        pagination: {
-          totalItems,
-          totalPages,
-          currentPage: page,
-          pageSize: perPage,
-        },
+        data: contacts,
+        page,
+        perPage,
+        totalItems,
+        totalPages,
+        hasPreviousPage: page > 1,
+        hasNextPage: page < totalPages,
       },
     });
   } catch (error) {
