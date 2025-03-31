@@ -69,13 +69,28 @@ export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
   });
 });
 
-export const createContactController = async (req, res) => {
-  const { body, user, file } = req;
-  const contact = await createContact({ ...body, photo: file }, user._id);
+export const createContactController = async (req, res, next) => {
+  const { body, user } = req;
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const contact = await createContact(
+    { ...body, ...(photoUrl && { photo: photoUrl }) },
+    user._id,
+  );
 
   res.status(201).json({
     status: 201,
-    message: `Successfully created a contact!`,
+    message: 'Successfully created a contact!',
     data: contact,
   });
 };
