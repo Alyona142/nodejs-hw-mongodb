@@ -69,16 +69,16 @@ export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
   });
 });
 
-export const createContactController = ctrlWrapper(async (req, res) => {
-  const { _id: userId } = req.user;
-  const contact = await createContact({ ...req.body, userId });
+export const createContactController = async (req, res) => {
+  const { body, user, file } = req;
+  const contact = await createContact({ ...body, photo: file }, user._id);
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully created a contact!',
+    message: `Successfully created a contact!`,
     data: contact,
   });
-});
+};
 
 export const deleteContactController = ctrlWrapper(async (req, res, next) => {
   const { _id: userId } = req.user;
