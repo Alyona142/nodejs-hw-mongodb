@@ -25,13 +25,13 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
       sortOrder,
     });
 
-    const { data: contacts, totalItems, totalPages } = contactsResponse;
+    const { contacts, totalItems, totalPages } = contactsResponse;
 
     res.json({
       status: 200,
       message: 'Successfully found contacts!',
       data: {
-        data: contacts,
+        contacts,
         page,
         perPage,
         totalItems,
