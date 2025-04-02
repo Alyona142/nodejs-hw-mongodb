@@ -31,7 +31,7 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
       status: 200,
       message: 'Successfully found contacts!',
       data: {
-        contacts,
+        data: contacts,
         page,
         perPage,
         totalItems,
