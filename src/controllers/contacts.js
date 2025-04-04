@@ -24,8 +24,6 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
     sortOrder,
   });
 
-  console.log('Contacts Response:', contactsResponse);
-
   const { data: contacts, totalItems, totalPages } = contactsResponse;
 
   res.json({
