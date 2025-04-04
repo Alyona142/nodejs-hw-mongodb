@@ -19,37 +19,27 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
 
-  try {
-    const contactsResponse = await getAllContacts({
-      userId,
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-    });
+  const contactsResponse = await getAllContacts({
+    userId,
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+  });
 
-    const { data: contacts, totalItems, totalPages } = contactsResponse;
+  const { data: contacts, totalItems, totalPages } = contactsResponse;
 
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: {
-        contacts,
-        pagination: {
-          totalItems,
-          totalPages,
-          currentPage: page,
-          pageSize: perPage,
-        },
-      },
-    });
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    res.status(500).json({
-      status: 500,
-      message: 'Error fetching contacts',
-    });
-  }
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: contacts,
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    hasPreviousPage: page > 1,
+    hasNextPage: page < totalPages,
+  });
 });
 
 export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
