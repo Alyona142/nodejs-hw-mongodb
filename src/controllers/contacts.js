@@ -19,7 +19,7 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
 
-  const contactsResponse = await getAllContacts({
+  const contacts = await getAllContacts({
     userId,
     page,
     perPage,
@@ -27,18 +27,10 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
     sortOrder,
   });
 
-  const { data: contacts, totalItems, totalPages } = contactsResponse;
-
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
     data: contacts,
-    page,
-    perPage,
-    totalItems,
-    totalPages,
-    hasPreviousPage: page > 1,
-    hasNextPage: page < totalPages,
   });
 });
 
