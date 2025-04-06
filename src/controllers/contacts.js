@@ -12,6 +12,7 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 export const getContactsController = async (req, res) => {
+  const { _id: userId } = req.user;
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
 
@@ -20,8 +21,10 @@ export const getContactsController = async (req, res) => {
     perPage,
     sortBy,
     sortOrder,
-    userId: req.user.id,
+    userId,
   });
+
+  console.log('userId:', userId);
 
   res.status(200).json({
     status: 200,
