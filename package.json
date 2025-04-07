@@ -114,6 +114,7 @@
     "simple-update-notifier": "^2.0.0",
     "strip-json-comments": "^3.1.1",
     "supports-color": "^5.5.0",
+    "swagger-ui-express": "^5.0.1",
     "to-regex-range": "^5.0.1",
     "touch": "^3.1.1",
     "type-check": "^0.4.0",
