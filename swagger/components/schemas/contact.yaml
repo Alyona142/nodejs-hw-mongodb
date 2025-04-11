@@ -3,6 +3,8 @@ required:
   - name
   - phoneNumber
   - contactType
+  - _id
+  - userId
 properties:
   _id:
     description: 'Contact id'

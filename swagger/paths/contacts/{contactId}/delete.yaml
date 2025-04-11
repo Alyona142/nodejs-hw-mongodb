@@ -12,8 +12,8 @@ parameters:
     schema:
       type: string
 responses:
-  '200':
-    description: Contact deleted
+  '204':
+    description: Successfully deleted the contact
   '404':
     $ref: ../../../components/responses/contacts/404.yaml
   '401':
