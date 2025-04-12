@@ -29,7 +29,7 @@ parameters:
       enum: ['asc', 'desc']
       example: 'asc'
   - in: query
-    name: isFavourite
+    name: isFavorite
     schema:
       type: boolean
       example: false
