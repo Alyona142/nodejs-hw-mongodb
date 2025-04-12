@@ -8,11 +8,20 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   userId,
+  isFavourite,
+  contactType,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
-
   const filter = { userId };
+
+  if (typeof isFavourite !== 'undefined') {
+    filter.isFavourite = isFavourite;
+  }
+
+  if (contactType) {
+    filter.contactType = contactType;
+  }
 
   const [contactCount, contacts] = await Promise.all([
     ContactsCollection.countDocuments(filter),
@@ -54,7 +63,7 @@ export const updateContact = async (contactId, payload, options = {}) => {
   const result = await ContactsCollection.findByIdAndUpdate(
     contactId,
     payload,
-    { new: true, upsert: false, ...options },
+    { new: true, upsert: false, runValidators: true, ...options },
   );
 
   return result || null;
