@@ -11,6 +11,9 @@
   },
   "servers": [
     {
+      "url": "https://nodejs-hw-mongodb-3fst.onrender.com"
+    },
+    {
       "url": "http://localhost:3000"
     }
   ],
@@ -177,7 +180,7 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Create contact",
+        "summary": "Create  contact",
         "operationId": "createContact",
         "description": "Create a contact with payload",
         "security": [
@@ -186,6 +189,7 @@
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
@@ -193,45 +197,48 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "contactType"
+                  "contactType",
+                  "_id",
+                  "userId"
                 ],
                 "properties": {
                   "name": {
-                    "description": "Contact's name",
                     "type": "string",
                     "minLength": 3,
                     "maxLength": 20,
+                    "description": "Contact's name",
                     "example": "Olena"
                   },
                   "phoneNumber": {
                     "type": "string",
                     "description": "Contact phone number",
-                    "example": "+380123561489"
+                    "example": "+380123456789"
                   },
                   "email": {
                     "type": "string",
+                    "format": "email",
                     "description": "Contact email",
                     "example": "olenapav13@gmail.com"
                   },
                   "isFavourite": {
                     "type": "boolean",
-                    "description": "Whether the contact if favourite",
+                    "description": "Whether the contact is favourite",
                     "default": false
                   },
                   "contactType": {
                     "type": "string",
-                    "description": "Type of contact",
                     "enum": [
                       "work",
                       "home",
                       "personal"
                     ],
+                    "description": "Type of contact",
                     "example": "home"
                   },
                   "photo": {
                     "type": "string",
                     "format": "binary",
-                    "description": "Сontact's photo (as a file)"
+                    "description": "Contact's photo (file)"
                   }
                 }
               }
@@ -240,7 +247,7 @@
         },
         "responses": {
           "201": {
-            "description": "Creates a contact",
+            "description": "Contact successfully created",
             "content": {
               "application/json": {
                 "schema": {
@@ -260,7 +267,6 @@
                       "example": "Successfully created a contact"
                     },
                     "data": {
-                      "type": "object",
                       "$ref": "#/components/schemas/contact"
                     }
                   }
@@ -362,8 +368,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Contact deleted"
+          "204": {
+            "description": "Successfully deleted the contact"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -407,7 +413,36 @@
         },
         "responses": {
           "200": {
-            "description": "Contact updated"
+            "description": "Patched a contact!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully patched a contact!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/contact"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -442,7 +477,9 @@
         "required": [
           "name",
           "phoneNumber",
-          "contactType"
+          "contactType",
+          "_id",
+          "userId"
         ],
         "properties": {
           "_id": {
