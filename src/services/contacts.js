@@ -13,6 +13,7 @@ export const getAllContacts = async ({
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
+
   const filter = { userId };
 
   if (typeof isFavourite !== 'undefined') {
@@ -48,9 +49,11 @@ export async function getContactById(id) {
     return null;
   }
 }
-
-export const createContact = async (payload) => {
-  const contact = await ContactsCollection.create(payload);
+export const createContact = async (payload, userId) => {
+  const contact = await ContactsCollection.create({
+    ...payload,
+    userId,
+  });
   return contact;
 };
 
