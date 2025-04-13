@@ -62,12 +62,13 @@ export const deleteContact = async ({ _id, userId }) => {
   return contact;
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
-  const result = await ContactsCollection.findByIdAndUpdate(
-    contactId,
-    payload,
-    { new: true, upsert: false, runValidators: true, ...options },
-  );
+export const updateContact = async (filter, payload, options = {}) => {
+  const result = await ContactsCollection.findOneAndUpdate(filter, payload, {
+    new: true,
+    upsert: false,
+    runValidators: true,
+    ...options,
+  });
 
   return result || null;
 };
