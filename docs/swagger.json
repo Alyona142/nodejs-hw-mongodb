@@ -197,9 +197,7 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "contactType",
-                  "_id",
-                  "userId"
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
