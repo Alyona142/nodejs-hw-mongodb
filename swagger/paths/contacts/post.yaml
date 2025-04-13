@@ -15,8 +15,6 @@ requestBody:
           - name
           - phoneNumber
           - contactType
-          - _id
-          - userId
         properties:
           name:
             type: string
