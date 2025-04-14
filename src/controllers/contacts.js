@@ -119,7 +119,6 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const { _id: userId } = req.user;
   const photo = req.file;
 
   let photoUrl;
@@ -132,10 +131,10 @@ export const patchContactController = async (req, res, next) => {
     }
   }
 
-  const result = await updateContact(
-    { _id: contactId, userId },
-    { ...req.body, ...(photoUrl && { photo: photoUrl }) },
-  );
+  const result = await updateContact(contactId, {
+    ...req.body,
+    ...(photoUrl && { photo: photoUrl }),
+  });
 
   if (!result) {
     return next(createHttpError(404, 'Contact not found'));
