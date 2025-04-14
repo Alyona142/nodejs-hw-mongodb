@@ -8,7 +8,7 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   userId,
-  isFavourite,
+  isFavorite,
   contactType,
 }) => {
   const limit = perPage;
@@ -16,8 +16,8 @@ export const getAllContacts = async ({
 
   const filter = { userId };
 
-  if (typeof isFavourite !== 'undefined') {
-    filter.isFavourite = isFavourite;
+  if (typeof isFavorite !== 'undefined') {
+    filter.isFavorite = isFavorite;
   }
 
   if (contactType) {

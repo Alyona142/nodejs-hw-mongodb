@@ -18,6 +18,7 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
   const { _id: userId } = req.user;
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
+  const { isFavorite, contactType } = req.query;
 
   const contacts = await getAllContacts({
     userId,
@@ -25,6 +26,8 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
     perPage,
     sortBy,
     sortOrder,
+    isFavorite,
+    contactType,
   });
 
   res.status(200).json({
