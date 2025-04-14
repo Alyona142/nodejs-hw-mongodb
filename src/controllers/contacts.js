@@ -33,7 +33,12 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
-    data: contacts,
+    data: contacts.data.map((contact) => {
+      return {
+        ...contact,
+        photo: contact.photo ? contact.photo : null,
+      };
+    }),
   });
 });
 
