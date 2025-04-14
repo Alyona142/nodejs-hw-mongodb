@@ -1,7 +1,6 @@
 import { SORT_ORDER } from '../constants/constants.js';
 import ContactsCollection from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
@@ -30,6 +29,7 @@ export const getAllContacts = async ({
       .skip(skip)
       .limit(limit)
       .sort({ [sortBy]: sortOrder })
+      .lean() // ✅ Очищення документів
       .exec(),
   ]);
 

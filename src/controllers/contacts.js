@@ -41,7 +41,6 @@ export const getContactsController = ctrlWrapper(async (req, res) => {
     }),
   });
 });
-
 export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
   const { _id: userId } = req.user;
   const { contactId } = req.params;
@@ -66,7 +65,7 @@ export const createContactController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (getEnvVar('ENABLE_CLOUDINARY') === true) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
@@ -74,7 +73,7 @@ export const createContactController = async (req, res, next) => {
   }
 
   const contact = await createContact(
-    { ...body, userId: user._id, photo: photoUrl },
+    { ...body, userId: user._id, ...(photoUrl && { photo: photoUrl }) },
     user._id,
   );
 
